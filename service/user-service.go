@@ -10,7 +10,7 @@ import (
 )
 
 type UserService interface {
-	Update(user dto.UserUpdateDTO) entity.User
+	Update(ID int, user dto.UserUpdateDTO) entity.User
 	Profile(userID string) entity.User
 	SaveImageUser(ID int, fileLocation string) entity.User
 	GetUserByID(ID int) entity.User
@@ -26,8 +26,8 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	}
 }
 
-func (service *userService) Update(user dto.UserUpdateDTO) entity.User {
-	userToUpdate := entity.User{}
+func (service *userService) Update(ID int, user dto.UserUpdateDTO) entity.User {
+	userToUpdate := service.userRepository.FindByID(ID)
 	err := smapping.FillStruct(&userToUpdate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Gagal mapping %v", err)

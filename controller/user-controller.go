@@ -51,7 +51,7 @@ func (c *userController) Update(context *gin.Context) {
 		panic(err.Error())
 	}
 	userUpdateDTO.ID = int(id)
-	u := c.userService.Update(userUpdateDTO)
+	u := c.userService.Update(userUpdateDTO.ID, userUpdateDTO)
 	res := helper.BuildResponse(true, "OK!", u)
 	context.JSON(http.StatusOK, res)
 }
