@@ -15,17 +15,20 @@ var (
 	db                  *gorm.DB                       = config.SetupDatabaseConnection()
 	userRepository      repository.UserRepository      = repository.NewUserRepository(db)
 	bukuRepository      repository.BukuRepository      = repository.NewBukuRepository(db)
+	kategoriRepository  repository.KategoriRepository  = repository.NewKategoriRepository(db)
 	keranjangRepository repository.KeranjangRepository = repository.NewKeranjangRepository(db)
 	transaksiRepository repository.TransaksiRepository = repository.NewTransaksiRepository(db)
 	jwtService          service.JWTService             = service.NewJWTService()
 	userService         service.UserService            = service.NewUserService(userRepository)
 	bukuService         service.BukuService            = service.NewBukuService(bukuRepository)
+	kategoriService     service.KategoriService        = service.NewKategoriService(kategoriRepository)
 	keranjangService    service.KeranjangService       = service.NewKeranjangService(keranjangRepository)
 	transaksiService    service.TransaksiService       = service.NewTransaksiService(transaksiRepository)
 	authService         service.AuthService            = service.NewAuthService(userRepository)
 	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
 	userController      controller.UserController      = controller.NewUserController(userService, jwtService)
 	bukuController      controller.BukuController      = controller.NewBukuController(bukuService, jwtService)
+	kategoriController  controller.KategoriController  = controller.NewKategoriController(kategoriService, jwtService)
 	keranjangController controller.KeranjangController = controller.NewKeranjangController(keranjangService, jwtService)
 	transaksiController controller.TransaksiController = controller.NewTransaksiController(transaksiService, jwtService)
 )
@@ -48,7 +51,7 @@ func main() {
 		userRoutes.POST("/image", userController.UploadImageUser)
 	}
 
-	bukuRoutes := r.Group("api/books")
+	bukuRoutes := r.Group("api/book")
 	{
 		bukuRoutes.GET("/", bukuController.GetAll)
 		bukuRoutes.POST("/", middleware.AuthorizeJWT(jwtService, userService), bukuController.CreateBuku)
@@ -56,6 +59,15 @@ func main() {
 		bukuRoutes.GET("/:id_buku", bukuController.GetByID)
 		bukuRoutes.PUT("/:id_buku", middleware.AuthorizeJWT(jwtService, userService), bukuController.UpdateBuku)
 		bukuRoutes.DELETE("/:id_buku", middleware.AuthorizeJWT(jwtService, userService), bukuController.DeleteBuku)
+	}
+
+	kategoriRoutes := r.Group("api/category")
+	{
+		kategoriRoutes.GET("/", kategoriController.GetAll)
+		kategoriRoutes.POST("/", middleware.AuthorizeJWT(jwtService, userService), kategoriController.CreateKategori)
+		kategoriRoutes.GET("/:id_kategori", kategoriController.GetByID)
+		kategoriRoutes.PUT("/:id_kategori", middleware.AuthorizeJWT(jwtService, userService), kategoriController.UpdateKategori)
+		kategoriRoutes.DELETE("/:id_kategori", middleware.AuthorizeJWT(jwtService, userService), kategoriController.DeleteKategori)
 	}
 
 	keranjangRoutes := r.Group("api/cart")
