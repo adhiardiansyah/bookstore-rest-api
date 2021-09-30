@@ -7,9 +7,9 @@ type Buku struct {
 	Isbn        string  `gorm:"type:varchar(255)" json:"isbn"`
 	Judul       string  `gorm:"type:varchar(255)" json:"judul"`
 	Slug        string  `gorm:"type:varchar(255)" json:"slug"`
-	KategoriID  int     `gorm:"not null" json:"-"`
-	PengarangID int     `gorm:"not null" json:"-"`
-	PenerbitID  int     `gorm:"not null" json:"-"`
+	KategoriID  int     `gorm:"not null" json:"kategori_id"`
+	PengarangID int     `gorm:"not null" json:"pengarang_id"`
+	PenerbitID  int     `gorm:"not null" json:"penerbit_id"`
 	TahunTerbit string  `gorm:"type:varchar(255)" json:"tahun_terbit"`
 	Stok        int     `json:"stok"`
 	Berat       float64 `json:"berat"`

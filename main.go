@@ -12,16 +12,22 @@ import (
 )
 
 var (
-	db             *gorm.DB                  = config.SetupDatabaseConnection()
-	userRepository repository.UserRepository = repository.NewUserRepository(db)
-	bukuRepository repository.BukuRepository = repository.NewBukuRepository(db)
-	jwtService     service.JWTService        = service.NewJWTService()
-	userService    service.UserService       = service.NewUserService(userRepository)
-	bukuService    service.BukuService       = service.NewBukuService(bukuRepository)
-	authService    service.AuthService       = service.NewAuthService(userRepository)
-	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
-	userController controller.UserController = controller.NewUserController(userService, jwtService)
-	bukuController controller.BukuController = controller.NewBukuController(bukuService, jwtService)
+	db                  *gorm.DB                       = config.SetupDatabaseConnection()
+	userRepository      repository.UserRepository      = repository.NewUserRepository(db)
+	bukuRepository      repository.BukuRepository      = repository.NewBukuRepository(db)
+	keranjangRepository repository.KeranjangRepository = repository.NewKeranjangRepository(db)
+	transaksiRepository repository.TransaksiRepository = repository.NewTransaksiRepository(db)
+	jwtService          service.JWTService             = service.NewJWTService()
+	userService         service.UserService            = service.NewUserService(userRepository)
+	bukuService         service.BukuService            = service.NewBukuService(bukuRepository)
+	keranjangService    service.KeranjangService       = service.NewKeranjangService(keranjangRepository)
+	transaksiService    service.TransaksiService       = service.NewTransaksiService(transaksiRepository)
+	authService         service.AuthService            = service.NewAuthService(userRepository)
+	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
+	userController      controller.UserController      = controller.NewUserController(userService, jwtService)
+	bukuController      controller.BukuController      = controller.NewBukuController(bukuService, jwtService)
+	keranjangController controller.KeranjangController = controller.NewKeranjangController(keranjangService, jwtService)
+	transaksiController controller.TransaksiController = controller.NewTransaksiController(transaksiService, jwtService)
 )
 
 func main() {
@@ -50,6 +56,17 @@ func main() {
 		bukuRoutes.GET("/:id_buku", bukuController.GetByID)
 		bukuRoutes.PUT("/:id_buku", middleware.AuthorizeJWT(jwtService, userService), bukuController.UpdateBuku)
 		bukuRoutes.DELETE("/:id_buku", middleware.AuthorizeJWT(jwtService, userService), bukuController.DeleteBuku)
+	}
+
+	keranjangRoutes := r.Group("api/cart")
+	{
+		keranjangRoutes.POST("/", middleware.AuthorizeJWT(jwtService, userService), keranjangController.AddToCart)
+		keranjangRoutes.GET("/", middleware.AuthorizeJWT(jwtService, userService), keranjangController.GetCartByUserID)
+	}
+
+	transaksiRoutes := r.Group("api/transaction")
+	{
+		transaksiRoutes.POST("/", middleware.AuthorizeJWT(jwtService, userService), transaksiController.CreateTransaksi)
 	}
 
 	r.Run()
