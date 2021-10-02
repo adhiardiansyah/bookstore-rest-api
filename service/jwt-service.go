@@ -8,7 +8,7 @@ import (
 )
 
 type JWTService interface {
-	GenerateToken(userID int) string
+	GenerateToken(userID int, roleID int, nama string, email string, gambarUser string, telp string, alamat string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
@@ -37,9 +37,15 @@ func getSecretKey() string {
 	return secretKey
 }
 
-func (j *jwtService) GenerateToken(userID int) string {
+func (j *jwtService) GenerateToken(userID int, roleID int, nama string, email string, gambarUser string, telp string, alamat string) string {
 	claims := jwt.MapClaims{}
 	claims["user_id"] = userID
+	claims["role_id"] = roleID
+	claims["nama"] = nama
+	claims["email"] = email
+	claims["gambar_user"] = gambarUser
+	claims["telp"] = telp
+	claims["alamat"] = alamat
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := token.SignedString([]byte(j.secretKey))
 	if err != nil {
