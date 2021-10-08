@@ -10,7 +10,7 @@ import (
 )
 
 type KeranjangService interface {
-	AddToCart(k dto.AddToCartDTO) entity.Keranjang
+	AddToCart(k dto.AddToCartDTO, b entity.Buku) entity.Keranjang
 	GetCartByUserID(UserID int) entity.Keranjang
 }
 
@@ -24,13 +24,13 @@ func NewKeranjangService(keranjangRepo repository.KeranjangRepository) Keranjang
 	}
 }
 
-func (service *keranjangService) AddToCart(k dto.AddToCartDTO) entity.Keranjang {
+func (service *keranjangService) AddToCart(k dto.AddToCartDTO, b entity.Buku) entity.Keranjang {
 	keranjang := entity.Keranjang{}
 	err := smapping.FillStruct(&keranjang, smapping.MapFields(&k))
 
-	keranjang.BukuID = k.BukuID
+	keranjang.BukuID = b.IDBuku
 	keranjang.UserID = k.User.ID
-	keranjang.Harga = k.Harga
+	keranjang.Harga = b.Harga
 	keranjang.Jumlah = keranjang.Jumlah + 1
 
 	if err != nil {
