@@ -3,6 +3,7 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/adhiardiansyah/bookstore-rest-api/helper"
 	"github.com/adhiardiansyah/bookstore-rest-api/service"
@@ -13,12 +14,19 @@ import (
 func AuthorizeJWT(jwtService service.JWTService, userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			response := helper.BuildErrorResponse("Gagal memproses permintaan", "Tidak ditemukan token", nil)
+		if !strings.Contains(authHeader, "Bearer") {
+			response := helper.BuildErrorResponse("Gagal memproses permintaan", "Format token salah", nil)
 			c.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
-		token, err := jwtService.ValidateToken(authHeader)
+
+		tokenString := ""
+		arrayToken := strings.Split(authHeader, " ")
+		if len(arrayToken) == 2 {
+			tokenString = arrayToken[1]
+		}
+
+		token, err := jwtService.ValidateToken(tokenString)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
 			log.Println("Claim[user_id]: ", claims["user_id"])

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/adhiardiansyah/bookstore-rest-api/dto"
 	"github.com/adhiardiansyah/bookstore-rest-api/entity"
@@ -41,7 +42,19 @@ func (c *userController) Update(context *gin.Context) {
 	}
 
 	authHeader := context.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if !strings.Contains(authHeader, "Bearer") {
+		response := helper.BuildErrorResponse("Gagal memproses permintaan", "Format token salah", nil)
+		context.AbortWithStatusJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	tokenString := ""
+	arrayToken := strings.Split(authHeader, " ")
+	if len(arrayToken) == 2 {
+		tokenString = arrayToken[1]
+	}
+
+	token, errToken := c.jwtService.ValidateToken(tokenString)
 	if errToken != nil {
 		panic(errToken.Error())
 	}
@@ -58,7 +71,19 @@ func (c *userController) Update(context *gin.Context) {
 
 func (c *userController) Profile(context *gin.Context) {
 	authHeader := context.GetHeader("Authorization")
-	token, err := c.jwtService.ValidateToken(authHeader)
+	if !strings.Contains(authHeader, "Bearer") {
+		response := helper.BuildErrorResponse("Gagal memproses permintaan", "Format token salah", nil)
+		context.AbortWithStatusJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	tokenString := ""
+	arrayToken := strings.Split(authHeader, " ")
+	if len(arrayToken) == 2 {
+		tokenString = arrayToken[1]
+	}
+
+	token, err := c.jwtService.ValidateToken(tokenString)
 	if err != nil {
 		panic(err.Error())
 	}
