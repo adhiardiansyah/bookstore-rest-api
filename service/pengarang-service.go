@@ -10,9 +10,9 @@ import (
 )
 
 type PengarangService interface {
-	CreatePengarang(b dto.CreatePengarangDTO) entity.Pengarang
-	UpdatePengarang(IDPengarang int, b dto.UpdatePengarangDTO) entity.Pengarang
-	DeletePengarang(b entity.Pengarang)
+	CreatePengarang(p dto.CreatePengarangDTO) entity.Pengarang
+	UpdatePengarang(IDPengarang int, p dto.UpdatePengarangDTO) entity.Pengarang
+	DeletePengarang(p entity.Pengarang)
 	GetAll() []entity.Pengarang
 	GetByID(IDPengarang int) entity.Pengarang
 }
@@ -27,9 +27,9 @@ func NewPengarangService(pengarangRepo repository.PengarangRepository) Pengarang
 	}
 }
 
-func (service *pengarangService) CreatePengarang(b dto.CreatePengarangDTO) entity.Pengarang {
+func (service *pengarangService) CreatePengarang(p dto.CreatePengarangDTO) entity.Pengarang {
 	pengarang := entity.Pengarang{}
-	err := smapping.FillStruct(&pengarang, smapping.MapFields(&b))
+	err := smapping.FillStruct(&pengarang, smapping.MapFields(&p))
 	if err != nil {
 		log.Fatalf("Gagal mapping, error: %v", err)
 	}
@@ -37,9 +37,9 @@ func (service *pengarangService) CreatePengarang(b dto.CreatePengarangDTO) entit
 	return res
 }
 
-func (service *pengarangService) UpdatePengarang(IDPengarang int, b dto.UpdatePengarangDTO) entity.Pengarang {
+func (service *pengarangService) UpdatePengarang(IDPengarang int, p dto.UpdatePengarangDTO) entity.Pengarang {
 	pengarang := service.pengarangRepository.FindByID(IDPengarang)
-	err := smapping.FillStruct(&pengarang, smapping.MapFields(&b))
+	err := smapping.FillStruct(&pengarang, smapping.MapFields(&p))
 	if err != nil {
 		log.Fatalf("Gagal mapping, error: %v", err)
 	}
@@ -47,8 +47,8 @@ func (service *pengarangService) UpdatePengarang(IDPengarang int, b dto.UpdatePe
 	return res
 }
 
-func (service *pengarangService) DeletePengarang(b entity.Pengarang) {
-	service.pengarangRepository.DeletePengarang(b)
+func (service *pengarangService) DeletePengarang(p entity.Pengarang) {
+	service.pengarangRepository.DeletePengarang(p)
 }
 
 func (service *pengarangService) GetAll() []entity.Pengarang {

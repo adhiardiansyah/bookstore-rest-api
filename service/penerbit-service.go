@@ -10,9 +10,9 @@ import (
 )
 
 type PenerbitService interface {
-	CreatePenerbit(b dto.CreatePenerbitDTO) entity.Penerbit
-	UpdatePenerbit(IDPenerbit int, b dto.UpdatePenerbitDTO) entity.Penerbit
-	DeletePenerbit(b entity.Penerbit)
+	CreatePenerbit(p dto.CreatePenerbitDTO) entity.Penerbit
+	UpdatePenerbit(IDPenerbit int, p dto.UpdatePenerbitDTO) entity.Penerbit
+	DeletePenerbit(p entity.Penerbit)
 	GetAll() []entity.Penerbit
 	GetByID(IDPenerbit int) entity.Penerbit
 }
@@ -27,9 +27,9 @@ func NewPenerbitService(penerbitRepo repository.PenerbitRepository) PenerbitServ
 	}
 }
 
-func (service *penerbitService) CreatePenerbit(b dto.CreatePenerbitDTO) entity.Penerbit {
+func (service *penerbitService) CreatePenerbit(p dto.CreatePenerbitDTO) entity.Penerbit {
 	penerbit := entity.Penerbit{}
-	err := smapping.FillStruct(&penerbit, smapping.MapFields(&b))
+	err := smapping.FillStruct(&penerbit, smapping.MapFields(&p))
 	if err != nil {
 		log.Fatalf("Gagal mapping, error: %v", err)
 	}
@@ -37,9 +37,9 @@ func (service *penerbitService) CreatePenerbit(b dto.CreatePenerbitDTO) entity.P
 	return res
 }
 
-func (service *penerbitService) UpdatePenerbit(IDPenerbit int, b dto.UpdatePenerbitDTO) entity.Penerbit {
+func (service *penerbitService) UpdatePenerbit(IDPenerbit int, p dto.UpdatePenerbitDTO) entity.Penerbit {
 	penerbit := service.penerbitRepository.FindByID(IDPenerbit)
-	err := smapping.FillStruct(&penerbit, smapping.MapFields(&b))
+	err := smapping.FillStruct(&penerbit, smapping.MapFields(&p))
 	if err != nil {
 		log.Fatalf("Gagal mapping, error: %v", err)
 	}
@@ -47,8 +47,8 @@ func (service *penerbitService) UpdatePenerbit(IDPenerbit int, b dto.UpdatePener
 	return res
 }
 
-func (service *penerbitService) DeletePenerbit(b entity.Penerbit) {
-	service.penerbitRepository.DeletePenerbit(b)
+func (service *penerbitService) DeletePenerbit(p entity.Penerbit) {
+	service.penerbitRepository.DeletePenerbit(p)
 }
 
 func (service *penerbitService) GetAll() []entity.Penerbit {

@@ -18,6 +18,7 @@ var (
 	kategoriRepository  repository.KategoriRepository  = repository.NewKategoriRepository(db)
 	pengarangRepository repository.PengarangRepository = repository.NewPengarangRepository(db)
 	penerbitRepository  repository.PenerbitRepository  = repository.NewPenerbitRepository(db)
+	roleRepository      repository.RoleRepository      = repository.NewRoleRepository(db)
 	keranjangRepository repository.KeranjangRepository = repository.NewKeranjangRepository(db)
 	transaksiRepository repository.TransaksiRepository = repository.NewTransaksiRepository(db)
 	jwtService          service.JWTService             = service.NewJWTService()
@@ -26,6 +27,7 @@ var (
 	kategoriService     service.KategoriService        = service.NewKategoriService(kategoriRepository)
 	pengarangService    service.PengarangService       = service.NewPengarangService(pengarangRepository)
 	penerbitService     service.PenerbitService        = service.NewPenerbitService(penerbitRepository)
+	roleService         service.RoleService            = service.NewRoleService(roleRepository)
 	keranjangService    service.KeranjangService       = service.NewKeranjangService(keranjangRepository)
 	transaksiService    service.TransaksiService       = service.NewTransaksiService(transaksiRepository)
 	authService         service.AuthService            = service.NewAuthService(userRepository)
@@ -35,6 +37,7 @@ var (
 	kategoriController  controller.KategoriController  = controller.NewKategoriController(kategoriService, jwtService)
 	pengarangController controller.PengarangController = controller.NewPengarangController(pengarangService, jwtService)
 	penerbitController  controller.PenerbitController  = controller.NewPenerbitController(penerbitService, jwtService)
+	roleController      controller.RoleController      = controller.NewRoleController(roleService, jwtService)
 	keranjangController controller.KeranjangController = controller.NewKeranjangController(keranjangService, jwtService)
 	transaksiController controller.TransaksiController = controller.NewTransaksiController(transaksiService, jwtService)
 )
@@ -93,6 +96,15 @@ func main() {
 		penerbitRoutes.GET("/:id_penerbit", penerbitController.GetByID)
 		penerbitRoutes.PUT("/:id_penerbit", middleware.AuthorizeJWT(jwtService, userService), penerbitController.UpdatePenerbit)
 		penerbitRoutes.DELETE("/:id_penerbit", middleware.AuthorizeJWT(jwtService, userService), penerbitController.DeletePenerbit)
+	}
+
+	roleRoutes := r.Group("api/role")
+	{
+		roleRoutes.GET("/", roleController.GetAll)
+		roleRoutes.POST("/", roleController.CreateRole)
+		roleRoutes.GET("/:id_role", roleController.GetByID)
+		roleRoutes.PUT("/:id_role", middleware.AuthorizeJWT(jwtService, userService), roleController.UpdateRole)
+		roleRoutes.DELETE("/:id_role", middleware.AuthorizeJWT(jwtService, userService), roleController.DeleteRole)
 	}
 
 	keranjangRoutes := r.Group("api/cart")
