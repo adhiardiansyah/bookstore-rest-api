@@ -52,6 +52,7 @@ func main() {
 
 	userRoutes := r.Group("api/user", middleware.AuthorizeJWT(jwtService, userService))
 	{
+		userRoutes.GET("/", userController.GetAll)
 		userRoutes.GET("/profile", userController.Profile)
 		userRoutes.PUT("/profile", userController.Update)
 		userRoutes.POST("/image", userController.UploadImageUser)

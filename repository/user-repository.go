@@ -14,6 +14,7 @@ type UserRepository interface {
 	UpdateImageUser(user entity.User) entity.User
 	VerifyCredential(email string, password string) interface{}
 	IsDuplicateEmail(email string) (tx *gorm.DB)
+	FindAll() []entity.User
 	FindByEmail(email string) entity.User
 	FindByID(ID int) entity.User
 	ProfileUser(userID string) entity.User
@@ -66,6 +67,12 @@ func (db *userConnection) VerifyCredential(email string, password string) interf
 func (db *userConnection) IsDuplicateEmail(email string) (tx *gorm.DB) {
 	var user entity.User
 	return db.connection.Where("email = ?", email).Take(&user)
+}
+
+func (db *userConnection) FindAll() []entity.User {
+	var users []entity.User
+	db.connection.Preload("Role").Find(&users)
+	return users
 }
 
 func (db *userConnection) FindByEmail(email string) entity.User {

@@ -13,6 +13,7 @@ type UserService interface {
 	Update(ID int, user dto.UserUpdateDTO) entity.User
 	Profile(userID string) entity.User
 	SaveImageUser(ID int, fileLocation string) entity.User
+	GetAll() []entity.User
 	GetUserByID(ID int) entity.User
 }
 
@@ -45,6 +46,10 @@ func (service *userService) SaveImageUser(ID int, fileLocation string) entity.Us
 	user.GambarUser = fileLocation
 	updatedFoto := service.userRepository.UpdateImageUser(user)
 	return updatedFoto
+}
+
+func (service *userService) GetAll() []entity.User {
+	return service.userRepository.FindAll()
 }
 
 func (service *userService) GetUserByID(ID int) entity.User {

@@ -15,6 +15,7 @@ import (
 )
 
 type UserController interface {
+	GetAll(context *gin.Context)
 	Update(context *gin.Context)
 	Profile(context *gin.Context)
 	UploadImageUser(context *gin.Context)
@@ -30,6 +31,12 @@ func NewUserController(userService service.UserService, jwtService service.JWTSe
 		userService: userService,
 		jwtService:  jwtService,
 	}
+}
+
+func (c *userController) GetAll(context *gin.Context) {
+	var user []entity.User = c.userService.GetAll()
+	res := helper.BuildResponse(true, "Sukses", user)
+	context.JSON(http.StatusOK, res)
 }
 
 func (c *userController) Update(context *gin.Context) {
