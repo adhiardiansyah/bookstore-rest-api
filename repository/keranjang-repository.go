@@ -22,7 +22,7 @@ func NewKeranjangRepository(dbConn *gorm.DB) KeranjangRepository {
 
 func (db *keranjangConnection) SaveKeranjang(k entity.Keranjang) entity.Keranjang {
 	db.connection.Save(&k)
-	db.connection.Preload("User").Find(&k)
+	db.connection.Preload("Buku").Preload("User").Find(&k)
 	return k
 }
 
