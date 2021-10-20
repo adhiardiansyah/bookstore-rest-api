@@ -8,6 +8,7 @@ import (
 type KeranjangRepository interface {
 	SaveKeranjang(k entity.Keranjang) entity.Keranjang
 	FindByUserID(UserID int) entity.Keranjang
+	FindByBukuID(IDKeranjang int) entity.Keranjang
 }
 
 type keranjangConnection struct {
@@ -29,5 +30,11 @@ func (db *keranjangConnection) SaveKeranjang(k entity.Keranjang) entity.Keranjan
 func (db *keranjangConnection) FindByUserID(UserID int) entity.Keranjang {
 	var keranjang entity.Keranjang
 	db.connection.Where("user_id = ?", UserID).Preload("Buku").Preload("User").Find(&keranjang)
+	return keranjang
+}
+
+func (db *keranjangConnection) FindByBukuID(BookID int) entity.Keranjang {
+	var keranjang entity.Keranjang
+	db.connection.Where("book_id = ?", BookID).Find(&keranjang)
 	return keranjang
 }
