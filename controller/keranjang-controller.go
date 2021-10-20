@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/adhiardiansyah/bookstore-rest-api/dto"
 	"github.com/adhiardiansyah/bookstore-rest-api/entity"
@@ -31,13 +30,6 @@ func NewKeranjangController(keranjangService service.KeranjangService, jwtServic
 
 func (c *keranjangController) AddToCart(context *gin.Context) {
 	var addToCartDTO dto.AddToCartDTO
-	buku_id, err := strconv.Atoi(context.Query("buku_id"))
-	if err != nil {
-		res := helper.BuildErrorResponse("Tidak ada parameter id_buku yang ditemukan", err.Error(), helper.EmptyObj{})
-		context.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
-	}
-	var buku entity.Buku = c.bukuService.GetByID(buku_id)
 
 	errDTO := context.ShouldBindJSON(&addToCartDTO)
 	if errDTO != nil {
@@ -46,7 +38,7 @@ func (c *keranjangController) AddToCart(context *gin.Context) {
 	} else {
 		currentUser := context.MustGet("currentUser").(entity.User)
 		addToCartDTO.User = currentUser
-		result := c.keranjangService.AddToCart(addToCartDTO, buku)
+		result := c.keranjangService.AddToCart(addToCartDTO)
 		response := helper.BuildResponse(true, "Sukses menambahkan data", result)
 		context.JSON(http.StatusOK, response)
 	}

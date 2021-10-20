@@ -5,6 +5,7 @@ import (
 )
 
 type AddToCartDTO struct {
-	Buku entity.Buku
-	User entity.User
+	BukuID int `json:"buku_id" form:"buku_id" binding:"required,number"`
+	Harga  int `json:"harga" form:"harga" binding:"required,number"`
+	User   entity.User
 }
