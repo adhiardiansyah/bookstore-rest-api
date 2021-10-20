@@ -17,7 +17,6 @@ type KeranjangController interface {
 
 type keranjangController struct {
 	keranjangService service.KeranjangService
-	bukuService      service.BukuService
 	jwtService       service.JWTService
 }
 
