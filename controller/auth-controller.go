@@ -57,7 +57,7 @@ func (c *authController) Register(ctx *gin.Context) {
 	}
 	if !c.authService.IsDuplicateEmail(registerDTO.Email) {
 		response := helper.BuildErrorResponse("Gagal untuk memproses permintaan", errDTO.Error(), helper.EmptyObj{})
-		ctx.JSON(http.StatusConflict, response)
+		ctx.JSON(http.StatusUnprocessableEntity, response)
 	} else {
 		createUser := c.authService.CreateUser(registerDTO)
 		token := c.jwtService.GenerateToken(createUser.ID, createUser.RoleID, createUser.Nama, createUser.Email, createUser.GambarUser, createUser.Telp, createUser.Alamat)

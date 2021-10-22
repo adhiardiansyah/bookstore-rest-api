@@ -6,6 +6,7 @@ import (
 	"github.com/adhiardiansyah/bookstore-rest-api/middleware"
 	"github.com/adhiardiansyah/bookstore-rest-api/repository"
 	"github.com/adhiardiansyah/bookstore-rest-api/service"
+	cors "github.com/rs/cors/wrapper/gin"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -45,6 +46,7 @@ var (
 func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.Static("/images", "./images")
 
 	authRoutes := r.Group("api/auth")
