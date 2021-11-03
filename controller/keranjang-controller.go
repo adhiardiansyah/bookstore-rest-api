@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,6 +31,7 @@ func NewKeranjangController(keranjangService service.KeranjangService, jwtServic
 
 func (c *keranjangController) AddToCart(context *gin.Context) {
 	buku_id, err := strconv.Atoi(context.PostForm("buku_id"))
+	fmt.Println(buku_id)
 	if err != nil {
 		res := helper.BuildErrorResponse("Tidak ada parameter buku_id yang ditemukan", err.Error(), helper.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
