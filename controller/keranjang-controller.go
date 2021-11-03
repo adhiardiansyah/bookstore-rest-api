@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
-	// "github.com/adhiardiansyah/bookstore-rest-api/dto"
+	// "strconv"
+
+	"github.com/adhiardiansyah/bookstore-rest-api/dto"
 	"github.com/adhiardiansyah/bookstore-rest-api/entity"
 	"github.com/adhiardiansyah/bookstore-rest-api/helper"
 	"github.com/adhiardiansyah/bookstore-rest-api/service"
@@ -31,34 +31,34 @@ func NewKeranjangController(keranjangService service.KeranjangService, jwtServic
 }
 
 func (c *keranjangController) AddToCart(context *gin.Context) {
-	buku_id, err := ioutil.ReadAll(context.Request.Body)
-	id_buku := ioutil.NopCloser(bytes.NewReader(buku_id))
-	fmt.Println(id_buku)
-	if err != nil {
-		res := helper.BuildErrorResponse("Tidak ada parameter buku_id yang ditemukan", err.Error(), helper.EmptyObj{})
-		context.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
-	}
-
-	// var addToCartDTO dto.AddToCartDTO
-
-	// errDTO := context.ShouldBindJSON(&addToCartDTO)
-	// if errDTO != nil {
-	// 	res := helper.BuildErrorResponse("Gagal untuk memproses permintaan", errDTO.Error(), helper.EmptyObj{})
-	// 	context.JSON(http.StatusBadRequest, res)
-	// } else {
-	// 	currentUser := context.MustGet("currentUser").(entity.User)
-	// 	addToCartDTO.User = currentUser
-	// 	if buku_id == 0 {
-	// 		result := c.keranjangService.AddToCart(addToCartDTO)
-	// 		response := helper.BuildResponse(true, "Sukses menambahkan data", result)
-	// 		context.JSON(http.StatusOK, response)
-	// 	} else {
-	// 		result := c.keranjangService.UpdateCart(buku_id, addToCartDTO)
-	// 		response := helper.BuildResponse(true, "Sukses menambahkan data", result)
-	// 		context.JSON(http.StatusOK, response)
-	// 	}
+	// buku_id, err := strconv.Atoi(context.PostForm("buku_id"))
+	// if err != nil {
+	// 	res := helper.BuildErrorResponse("Tidak ada parameter buku_id yang ditemukan", err.Error(), helper.EmptyObj{})
+	// 	context.AbortWithStatusJSON(http.StatusBadRequest, res)
+	// 	return
 	// }
+
+	var addToCartDTO dto.AddToCartDTO
+
+	errDTO := context.ShouldBindJSON(&addToCartDTO)
+	if errDTO != nil {
+		res := helper.BuildErrorResponse("Gagal untuk memproses permintaan", errDTO.Error(), helper.EmptyObj{})
+		context.JSON(http.StatusBadRequest, res)
+	} else {
+		keranjang := entity.Keranjang{}
+		fmt.Println(keranjang.BukuID)
+		currentUser := context.MustGet("currentUser").(entity.User)
+		addToCartDTO.User = currentUser
+		if keranjang.BukuID == 0 {
+			result := c.keranjangService.AddToCart(addToCartDTO)
+			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
+			context.JSON(http.StatusOK, response)
+		} else {
+			result := c.keranjangService.UpdateCart(keranjang.BukuID, addToCartDTO)
+			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
+			context.JSON(http.StatusOK, response)
+		}
+	}
 }
 
 func (c *keranjangController) GetCartByUserID(context *gin.Context) {
