@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -31,7 +32,8 @@ func NewKeranjangController(keranjangService service.KeranjangService, jwtServic
 
 func (c *keranjangController) AddToCart(context *gin.Context) {
 	buku_id, err := ioutil.ReadAll(context.Request.Body)
-	fmt.Println(buku_id)
+	id_buku := ioutil.NopCloser(bytes.NewReader(buku_id))
+	fmt.Println(id_buku)
 	if err != nil {
 		res := helper.BuildErrorResponse("Tidak ada parameter buku_id yang ditemukan", err.Error(), helper.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
