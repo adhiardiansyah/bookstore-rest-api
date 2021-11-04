@@ -55,7 +55,7 @@ func (c *keranjangController) AddToCart(context *gin.Context) {
 			context.JSON(http.StatusOK, response)
 		} else {
 			result := c.keranjangService.UpdateCart(bukuID, addToCartDTO)
-			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
+			response := helper.BuildResponse(true, "Sukses memperbarui data", result)
 			context.JSON(http.StatusOK, response)
 		}
 	}
