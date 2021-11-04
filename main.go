@@ -112,7 +112,6 @@ func main() {
 	keranjangRoutes := r.Group("api/cart")
 	{
 		keranjangRoutes.POST("/", middleware.AuthorizeJWT(jwtService, userService), keranjangController.AddToCart)
-		keranjangRoutes.PUT("/", middleware.AuthorizeJWT(jwtService, userService), keranjangController.AddToCart)
 		keranjangRoutes.GET("/", middleware.AuthorizeJWT(jwtService, userService), keranjangController.GetCartByUserID)
 	}
 
