@@ -50,12 +50,12 @@ func (c *keranjangController) AddToCart(context *gin.Context) {
 		currentUser := context.MustGet("currentUser").(entity.User)
 		addToCartDTO.User = currentUser
 		if !c.keranjangService.FindByBukuID(bukuID) {
-			result := c.keranjangService.AddToCart(addToCartDTO)
-			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
-			context.JSON(http.StatusOK, response)
-		} else {
 			result := c.keranjangService.UpdateCart(bukuID, addToCartDTO)
 			response := helper.BuildResponse(true, "Sukses memperbarui data", result)
+			context.JSON(http.StatusOK, response)
+		} else {
+			result := c.keranjangService.AddToCart(addToCartDTO)
+			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
 			context.JSON(http.StatusOK, response)
 		}
 	}
