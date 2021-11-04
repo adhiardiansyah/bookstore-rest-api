@@ -45,16 +45,16 @@ func (c *keranjangController) AddToCart(context *gin.Context) {
 		res := helper.BuildErrorResponse("Gagal untuk memproses permintaan", errDTO.Error(), helper.EmptyObj{})
 		context.JSON(http.StatusBadRequest, res)
 	} else {
-		keranjang := entity.Keranjang{}
-		fmt.Println(keranjang.BukuID)
+		bukuID := addToCartDTO.BukuID
+		fmt.Println(bukuID)
 		currentUser := context.MustGet("currentUser").(entity.User)
 		addToCartDTO.User = currentUser
-		if keranjang.BukuID == 0 {
+		if !c.keranjangService.FindByBukuID(bukuID) {
 			result := c.keranjangService.AddToCart(addToCartDTO)
 			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
 			context.JSON(http.StatusOK, response)
 		} else {
-			result := c.keranjangService.UpdateCart(keranjang.BukuID, addToCartDTO)
+			result := c.keranjangService.UpdateCart(bukuID, addToCartDTO)
 			response := helper.BuildResponse(true, "Sukses menambahkan data", result)
 			context.JSON(http.StatusOK, response)
 		}

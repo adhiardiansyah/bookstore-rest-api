@@ -8,7 +8,8 @@ import (
 type KeranjangRepository interface {
 	SaveKeranjang(k entity.Keranjang) entity.Keranjang
 	FindByUserID(UserID int) entity.Keranjang
-	FindByBukuID(IDKeranjang int) entity.Keranjang
+	FindByBukuID(BukuID int) entity.Keranjang
+	FindByBukuID2(BukuID int) (tx *gorm.DB)
 }
 
 type keranjangConnection struct {
@@ -33,8 +34,13 @@ func (db *keranjangConnection) FindByUserID(UserID int) entity.Keranjang {
 	return keranjang
 }
 
-func (db *keranjangConnection) FindByBukuID(BookID int) entity.Keranjang {
+func (db *keranjangConnection) FindByBukuID(BukuID int) entity.Keranjang {
 	var keranjang entity.Keranjang
-	db.connection.Where("book_id = ?", BookID).Find(&keranjang)
+	db.connection.Where("buku_id = ?", BukuID).Find(&keranjang)
 	return keranjang
+}
+
+func (db *keranjangConnection) FindByBukuID2(BukuID int) (tx *gorm.DB) {
+	var keranjang entity.Keranjang
+	return db.connection.Where("buku_id = ?", BukuID).Take(&keranjang)
 }
