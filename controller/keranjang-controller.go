@@ -1,10 +1,7 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
-
-	// "strconv"
 
 	"github.com/adhiardiansyah/bookstore-rest-api/dto"
 	"github.com/adhiardiansyah/bookstore-rest-api/entity"
@@ -39,13 +36,16 @@ func (c *keranjangController) AddToCart(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, res)
 	} else {
 		bukuID := addToCartDTO.BukuID
-		fmt.Println(bukuID)
 		currentUser := context.MustGet("currentUser").(entity.User)
 		addToCartDTO.User = currentUser
 		if !c.keranjangService.FindByBukuID(bukuID) {
 			if !c.keranjangService.FindByUser(currentUser.ID) {
 				result := c.keranjangService.UpdateCart(bukuID, addToCartDTO)
 				response := helper.BuildResponse(true, "Sukses memperbarui data", result)
+				context.JSON(http.StatusOK, response)
+			} else {
+				result := c.keranjangService.AddToCart(addToCartDTO)
+				response := helper.BuildResponse(true, "Sukses menambahkan data", result)
 				context.JSON(http.StatusOK, response)
 			}
 		} else {
