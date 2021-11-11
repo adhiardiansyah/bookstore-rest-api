@@ -14,6 +14,7 @@ type KeranjangService interface {
 	UpdateCart(BukuID int, k dto.AddToCartDTO) entity.Keranjang
 	GetCartByUserID(UserID int) entity.Keranjang
 	FindByBukuID(BukuID int) bool
+	FindByUser(ID int) bool
 }
 
 type keranjangService struct {
@@ -60,5 +61,10 @@ func (service *keranjangService) GetCartByUserID(UserID int) entity.Keranjang {
 
 func (service *keranjangService) FindByBukuID(BukuID int) bool {
 	res := service.keranjangRepository.FindByBukuID2(BukuID)
+	return !(res.Error == nil)
+}
+
+func (service *keranjangService) FindByUser(ID int) bool {
+	res := service.keranjangRepository.FindByUser(ID)
 	return !(res.Error == nil)
 }

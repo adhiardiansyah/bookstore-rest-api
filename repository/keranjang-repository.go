@@ -10,6 +10,7 @@ type KeranjangRepository interface {
 	FindByUserID(UserID int) entity.Keranjang
 	FindByBukuID(BukuID int) entity.Keranjang
 	FindByBukuID2(BukuID int) (tx *gorm.DB)
+	FindByUser(ID int) (tx *gorm.DB)
 }
 
 type keranjangConnection struct {
@@ -43,4 +44,9 @@ func (db *keranjangConnection) FindByBukuID(BukuID int) entity.Keranjang {
 func (db *keranjangConnection) FindByBukuID2(BukuID int) (tx *gorm.DB) {
 	var keranjang entity.Keranjang
 	return db.connection.Where("buku_id = ?", BukuID).Take(&keranjang)
+}
+
+func (db *keranjangConnection) FindByUser(ID int) (tx *gorm.DB) {
+	var keranjang entity.Keranjang
+	return db.connection.Where("user_id = ?", ID).Take(&keranjang)
 }
